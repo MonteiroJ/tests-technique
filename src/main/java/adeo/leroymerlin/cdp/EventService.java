@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,6 +36,7 @@ public class EventService {
                                 .anyMatch(member -> member.getName().contains(query))))
                 // Filter events where any of their bands have members matching the query
                 .peek(event -> {
+                    AtomicInteger bandCount = new AtomicInteger(); // Initialize an AtomicInteger to hold the count of matching bands
 
                     List<Band> filteredBands = event.getBands().stream()
                             .filter(band -> band.getMembers().stream()
@@ -44,10 +46,13 @@ public class EventService {
                                 List<Member> members = band.getMembers().stream()
                                         .filter(member -> member.getName().contains(query))
                                         .collect(Collectors.toList()); // Filter members matching the query and collect them in a list
+                                band.setName(band.getName() + " [" + members.size() + "]"); // Append the member count to the band name
                                 band.setMembers(new HashSet<>(members));
+                                bandCount.getAndIncrement(); // Increment the band count
                             })
                             .collect(Collectors.toList()); // Collect the filtered bands in a list
 
+                    event.setTitle(event.getTitle() + " [" + bandCount + "]"); // Append the band count to the event title
                     event.setBands(new HashSet<>(filteredBands)); // Set the filtered bands on the event, converting the list to a set
                 })
                 .collect(Collectors.toList()); // Collect the filtered events in a list
