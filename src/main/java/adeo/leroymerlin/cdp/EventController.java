@@ -9,10 +9,10 @@ import java.util.List;
 @RequestMapping("/api/events")
 public class EventController {
 
-    private final EventService eventService;
+    private final EventServiceImpl eventService;
 
     @Autowired
-    public EventController(EventService eventService) {
+    public EventController(EventServiceImpl eventService) {
         this.eventService = eventService;
     }
 
