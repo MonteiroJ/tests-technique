@@ -21,7 +21,7 @@ public class EventServiceTest {
     private EventRepository eventRepository;
 
     @InjectMocks
-    private EventServiceImpl eventService;
+    private EventService eventService;
 
     @Test
     public void testGetFilteredEvents() {
